@@ -9,6 +9,7 @@
   },
   "bin": {
     "gendiff": "bin/gendiff.js"
+    
   },
   "keywords": [],
   "author": "",
