@@ -5,8 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage --coverageReporters lcov",
     "lint": "eslint ."
+    
   },
   "bin": {
     "gendiff": "bin/gendiff.js"
