@@ -5,8 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "jest --coverage --coverageReporters lcov",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    
     
   },
   "bin": {
