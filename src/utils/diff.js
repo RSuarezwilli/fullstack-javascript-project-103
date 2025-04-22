@@ -32,7 +32,7 @@ export default function gendiff(filepath1, filepath2) {
   const obj1 = JSON.parse(fileContent1);
   const obj2 = JSON.parse(fileContent2);
 
-  console.log(buildDiff(obj1, obj2))
+  console.log(buildDiff(obj1, obj2));
 
   return buildDiff(obj1, obj2);
 }

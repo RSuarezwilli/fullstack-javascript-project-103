@@ -1,20 +1,20 @@
 install:
-	npm install
+    npm install
 
 lint:
-	npx eslint .
+    npx eslint .
 
 lint-fix:
-	npx eslint . --fix
+    npx eslint . --fix
 
 test:
-	npm test
+    npm test
 
 test-coverage:
-	npm test -- --coverage --coverageProvider=v8
+    npm test -- --coverage --coverageProvider=v8
 
 publish:
-	npm publish --dry-run
+    npm publish --dry-run
 
-gendiff:
-	node bin/gendiff.js
+gendiff :
+        node bin/gendiff.js
