@@ -1,5 +1,5 @@
 import {program} from 'commander';
-import gendiff from '../src/utils/diff.js';
+import gendiff from '../index.js';
 
 
 program
