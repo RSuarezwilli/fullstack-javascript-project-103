@@ -1,4 +1,3 @@
-
 const buildDiff = (obj1, obj2) => {
   const keys1 = Object.keys(obj1);
   const keys2 = Object.keys(obj2);
