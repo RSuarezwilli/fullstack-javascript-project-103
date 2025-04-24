@@ -4,8 +4,8 @@ import buildDiff from './utils/diff.js'; // Importa la función buildDiff desde 
 
 export default function genDiff(path1, path2, formatType = 'stylish') {
 
-  const fullPath1 = path.resolve(filepath1);
-  const fullPath2 = path.resolve(filepath2);
+  const fullPath1 = path.resolve(path1);
+  const fullPath2 = path.resolve(path2);
 
   const fileContent1 = readFileSync(fullPath1, 'utf-8');
   const fileContent2 = readFileSync(fullPath2, 'utf-8');
