@@ -6,5 +6,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 test('gendiff basic test', () => {
-  expect(gendiff('file1.json', 'file2.json')).toBe('expected diff result');
+  expect(gendiff('./__fixtures__/file1.json', './__fixtures__/file2.json')).toBe(
+`{
+  - follow: false
+    host: codica.io
+  - proxy: 123.234.53.22
+  - timeout: 50
+  + timeout: 20
+  + verbose: true
+}`
+  );
 });
