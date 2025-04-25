@@ -2,7 +2,6 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import buildDiff from './utils/diff.js'; // Importa la función buildDiff desde utils/diff.js
 
-
 export default function genDiff(path1, path2) {
   const fullPath1 = path.resolve(path1);
   const fullPath2 = path.resolve(path2);
