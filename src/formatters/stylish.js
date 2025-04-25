@@ -18,7 +18,6 @@ const stylish = (diff, depth = 1) => {
   const indent = getIndent(depth);
   const bracketIndent = getBracketIndent(depth);
 
-  // Convertimos el objeto diff a array si no lo es
   const diffArray = Array.isArray(diff) ? diff : Object.values(diff);
 
   const lines = diffArray.map((item) => {
@@ -40,7 +39,7 @@ const stylish = (diff, depth = 1) => {
         return [
           `${indent}  ${key}: {`,
           stylish(item.children, depth + 1),
-          `${bracketIndent}}`
+          `${bracketIndent}}`,
         ].join('\n');
       default:
         throw new Error(`Unknown type: ${type}`);
