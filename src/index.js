@@ -1,8 +1,9 @@
 import { readFileSync } from 'fs';
 import path from 'path';
-import buildDiff from './utils/diff.js'; // Importa la función buildDiff desde utils/diff.js
+import buildDiff from './utils/diff.js';
+import formatStylish from './formatters/stylish.js'; // Cambiado el nombre de formatDiff a formatStylish
 
-export default function genDiff(path1, path2) {
+export default function genDiff(path1, path2, format = 'stylish') {
   const fullPath1 = path.resolve(path1);
   const fullPath2 = path.resolve(path2);
 
@@ -12,7 +13,13 @@ export default function genDiff(path1, path2) {
   const obj1 = JSON.parse(fileContent1);
   const obj2 = JSON.parse(fileContent2);
 
-  console.log(buildDiff(obj1, obj2));
+  const diff = buildDiff(obj1, obj2);
 
-  return buildDiff(obj1, obj2);
+  // Usamos la función importada (ahora llamada formatStylish)
+  switch (format) {
+    case 'stylish':
+      return formatStylish(diff);
+    default:
+      return formatStylish(diff);
+  }
 }
