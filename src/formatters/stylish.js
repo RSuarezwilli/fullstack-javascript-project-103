@@ -14,41 +14,40 @@ const stringify = (value, depth) => {
   return ['{', ...lines, `${getBracketIndent(depth + 1)}}`].join('\n');
 };
 
-const stylish = (tree) => {
-  const iter = (node, depth = 1) => {
-    const indent = getIndent(depth);
-    const bracketIndent = getBracketIndent(depth);
+const stylish = (diff, depth = 1) => {
+  const indent = getIndent(depth);
+  const bracketIndent = getBracketIndent(depth);
 
-    const lines = node.flatMap((item) => {
-      const { key, value, type } = item;
+  // Convertimos el objeto diff a array si no lo es
+  const diffArray = Array.isArray(diff) ? diff : Object.values(diff);
 
-      switch (type) {
-        case 'added':
-          return `${indent}+ ${key}: ${stringify(value, depth + 1)}`;
-        case 'deleted':
-          return `${indent}- ${key}: ${stringify(value, depth + 1)}`;
-        case 'unchanged':
-          return `${indent}  ${key}: ${stringify(value, depth + 1)}`;
-        case 'changed':
-          return [
-            `${indent}- ${key}: ${stringify(value[0], depth + 1)}`,
-            `${indent}+ ${key}: ${stringify(value[1], depth + 1)}`,
-          ];
-        case 'nested':
-          return [
-            `${indent}  ${key}: {`,
-            iter(value, depth + 1),
-            `${bracketIndent}}`,
-          ];
-        default:
-          throw new Error(`Unknown type: ${type}`);
-      }
-    });
+  const lines = diffArray.map((item) => {
+    const { key, value, type } = item;
 
-    return lines.join('\n');
-  };
+    switch (type) {
+      case 'added':
+        return `${indent}+ ${key}: ${stringify(value, depth + 1)}`;
+      case 'removed':
+        return `${indent}- ${key}: ${stringify(value, depth + 1)}`;
+      case 'unchanged':
+        return `${indent}  ${key}: ${stringify(value, depth + 1)}`;
+      case 'changed':
+        return [
+          `${indent}- ${key}: ${stringify(value.oldValue, depth + 1)}`,
+          `${indent}+ ${key}: ${stringify(value.newValue, depth + 1)}`,
+        ].join('\n');
+      case 'nested':
+        return [
+          `${indent}  ${key}: {`,
+          stylish(item.children, depth + 1),
+          `${bracketIndent}}`
+        ].join('\n');
+      default:
+        throw new Error(`Unknown type: ${type}`);
+    }
+  });
 
-  return `{\n${iter(tree)}\n}`;
+  return lines.join('\n');
 };
 
-export default stylish;
+export default (diff) => `{\n${stylish(diff)}\n}`;
