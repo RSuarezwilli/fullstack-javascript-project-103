@@ -18,10 +18,25 @@ const stylish = (diff, depth = 1) => {
   const indent = getIndent(depth);
   const bracketIndent = getBracketIndent(depth);
 
+  // Verificación más robusta del input
+  if (!diff || typeof diff !== 'object') {
+    return stringify(diff, depth);
+  }
+
   const diffArray = Array.isArray(diff) ? diff : Object.values(diff);
 
   const lines = diffArray.map((item) => {
+    // Validación del item
+    if (!item || typeof item !== 'object') {
+      return stringify(item, depth);
+    }
+
     const { key, value, type } = item;
+
+    // Manejo de casos donde type no está definido
+    if (!type) {
+      return `${indent}  ${key}: ${stringify(value, depth + 1)}`;
+    }
 
     switch (type) {
       case 'added':
@@ -42,7 +57,7 @@ const stylish = (diff, depth = 1) => {
           `${bracketIndent}}`,
         ].join('\n');
       default:
-        throw new Error(`Unknown type: ${type}`);
+        return `${indent}  ${key}: ${stringify(value, depth + 1)}`;
     }
   });
 
