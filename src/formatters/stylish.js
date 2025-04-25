@@ -1,5 +1,5 @@
 const getIndent = (depth) => '    '.repeat(depth);
-const getBracketIndent = (depth) => '    '.repeat(depth - 1);
+const getValueIndent = (depth) => '    '.repeat(depth).slice(2);
 
 const stringify = (value, depth) => {
   if (typeof value !== 'object' || value === null) {
@@ -11,28 +11,21 @@ const stringify = (value, depth) => {
     ([key, val]) => `${getIndent(depth)}${key}: ${stringify(val, depth + 1)}`,
   );
 
-  return `{\n${lines.join('\n')}\n${getBracketIndent(depth)}}`;
+  return `{\n${lines.join('\n')}\n${getIndent(depth - 1)}}`;
 };
 
 const formatStylish = (diff, depth = 1) => {
-  // Asegurar que diff sea un array
-  const diffArray = Array.isArray(diff) ? diff : [diff];
-
-  const lines = diffArray.map((item) => {
-    if (!item || typeof item !== 'object') {
-      return stringify(item, depth);
-    }
-
-    const { key, type, value } = item;
-    const indent = getIndent(depth - 1).slice(2); // 2 espacios menos para los símbolos
+  const lines = diff.map((item) => {
+    const { key, type } = item;
+    const indent = getValueIndent(depth);
 
     switch (type) {
       case 'added':
-        return `${indent}+ ${key}: ${stringify(value, depth + 1)}`;
+        return `${indent}+ ${key}: ${stringify(item.value, depth + 1)}`;
       case 'removed':
-        return `${indent}- ${key}: ${stringify(value, depth + 1)}`;
+        return `${indent}- ${key}: ${stringify(item.value, depth + 1)}`;
       case 'unchanged':
-        return `${indent}  ${key}: ${stringify(value, depth + 1)}`;
+        return `${indent}  ${key}: ${stringify(item.value, depth + 1)}`;
       case 'changed':
         return [
           `${indent}- ${key}: ${stringify(item.oldValue, depth + 1)}`,
@@ -45,7 +38,7 @@ const formatStylish = (diff, depth = 1) => {
           `${indent}  }`,
         ].join('\n');
       default:
-        return `${indent}  ${key}: ${stringify(value, depth + 1)}`;
+        throw new Error(`Unknown type: ${type}`);
     }
   });
 
