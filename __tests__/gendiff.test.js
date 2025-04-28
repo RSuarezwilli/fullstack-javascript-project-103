@@ -5,6 +5,7 @@ import gendiff from '../src/index.js'; // <-- Import correcto (asegúrate de la 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 test('gendiff basic test', () => {
