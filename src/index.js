@@ -4,6 +4,7 @@ import buildDiff from './utils/diff.js';
 import stylish from './formatters/stylish.js';
 import parse from './parsers/parsers.js';
 
+
 const getFileContent = (filepath) => {
   const absolutePath = path.resolve(process.cwd(), filepath);
   return readFileSync(absolutePath, 'utf-8');
