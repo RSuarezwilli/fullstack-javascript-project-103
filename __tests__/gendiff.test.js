@@ -12,5 +12,7 @@ test('gendiff basic test', () => {
   const file1 = getFixturePath('file1.json');
   const file2 = getFixturePath('file2.json');
   const expected = readFile('expected.txt');
-  expect(gendiff(file1, file2)).toEqual(expected.trim());
+
+  const result = gendiff(file1, file2).trim();
+  expect(result).toEqual(expected);
 });
