@@ -1,52 +1,36 @@
-const getIndent = (depth) => '    '.repeat(depth); // Asegúrate de que la indentación sea consistente
+const buildIndent = (depth, spacesCount = 4) => ' '.repeat(depth * spacesCount - 2);
 
-const getValueIndent = (depth) => '    '.repeat(depth).slice(2); // Desplazamiento correcto para valores
+const formatValue = (value, depth) => {
+  if (typeof value !== 'object' || value === null) return String(value);
 
-const stringify = (value, depth) => {
-  if (typeof value !== 'object' || value === null) {
-    return String(value);
-  }
-
+  const indent = buildIndent(depth + 1);
   const entries = Object.entries(value);
-  const lines = entries.map(
-    ([key, val]) => `${getIndent(depth + 1)}${key}: ${stringify(val, depth + 1)}`,
-  );
-
-  return `{\n${lines.join('\n')}\n${getIndent(depth)}}`;
+  const formatted = entries.map(([key, val]) => `${indent}    ${key}: ${formatValue(val, depth + 1)}`);
+  return `{\n${formatted.join('\n')}\n${indent}}`;
 };
 
-const formatStylish = (diff, depth = 1) => {
-  if (!Array.isArray(diff)) {
-    throw new Error(`Expected array, got ${typeof diff}`);
-  }
-
-  const lines = diff.map((node) => {
-    const indent = getValueIndent(depth);
-
+const stylish = (diff, depth = 1) => {
+  const indent = buildIndent(depth);
+  const result = diff.map((node) => {
     switch (node.type) {
       case 'added':
-        return `${indent}+ ${node.key}: ${stringify(node.value, depth + 1)}`;
+        return `${indent}+ ${node.key}: ${formatValue(node.value, depth)}`;
       case 'removed':
-        return `${indent}- ${node.key}: ${stringify(node.value, depth + 1)}`;
+        return `${indent}- ${node.key}: ${formatValue(node.value, depth)}`;
       case 'unchanged':
-        return `${indent}  ${node.key}: ${stringify(node.value, depth + 1)}`;
+        return `${indent}  ${node.key}: ${formatValue(node.value, depth)}`;
+      case 'nested':
+        return `${indent}  ${node.key}: {\n${stylish(node.children, depth + 1)}\n${indent}  }`;
       case 'changed':
         return [
-          `${indent}- ${node.key}: ${stringify(node.oldValue, depth + 1)}`,
-          `${indent}+ ${node.key}: ${stringify(node.newValue, depth + 1)}`,
-        ].join('\n');
-      case 'nested':
-        return [
-          `${indent}  ${node.key}: {`,
-          formatStylish(node.children, depth + 1),
-          `${indent}  }`,
+          `${indent}- ${node.key}: ${formatValue(node.oldValue, depth)}`,
+          `${indent}+ ${node.key}: ${formatValue(node.newValue, depth)}`,
         ].join('\n');
       default:
         throw new Error(`Unknown node type: ${node.type}`);
     }
   });
-
-  return lines.join('\n');
+  return result.join('\n');
 };
 
-export default (diff) => `{\n${formatStylish(diff)}\n}`;
+export default stylish;
