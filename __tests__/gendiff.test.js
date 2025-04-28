@@ -1,21 +1,18 @@
 import { fileURLToPath } from 'url';
 import path from 'path';
-import fs from 'fs'; // <-- Necesario para leer archivos
+import fs from 'fs';
 import gendiff from '../src/index.js';
 
-// Función para construir la ruta de un fixture
-const getFixturePath = (filename) => {
-  const currentDir = path.dirname(fileURLToPath(import.meta.url));
-  return path.join(currentDir, '..', '__fixtures__', filename);
-};
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Función para leer el contenido de un archivo
-const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8').trim();
+const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
 test('gendiff basic test', () => {
   const file1 = getFixturePath('file1.json');
   const file2 = getFixturePath('file2.json');
-  const expected = readFile('expected.txt'); // <-- Ahora lee desde expected.txt
+  const expected = readFile('expected.txt');
 
-  expect(gendiff(file1, file2)).toEqual(expected); // <-- usamos toEqual
+  expect(gendiff(file1, file2)).toBe(expected.trim());
 });
