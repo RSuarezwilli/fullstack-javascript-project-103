@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import buildDiff from './utils/diff.js';
 import stylish from './formatters/stylish.js';
-import parse from './parsers.js';
+import parse from './parsers/parsers.js';
 
 const getFileContent = (filepath) => {
   const absolutePath = path.resolve(process.cwd(), filepath);
