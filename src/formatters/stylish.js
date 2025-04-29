@@ -1,12 +1,16 @@
 const buildIndent = (depth, spacesCount = 4) => ' '.repeat(depth * spacesCount - 2);
 
 const formatValue = (value, depth) => {
-  if (typeof value !== 'object' || value === null) return String(value);
+  if (typeof value !== 'object' || value === null) {
+    if (value === null) return 'null';
+    if (value === '') return '""';
+    return String(value);
+  }
 
   const indent = buildIndent(depth + 1);
   const entries = Object.entries(value);
-  const formatted = entries.map(([key, val]) => `${indent}    ${key}: ${formatValue(val, depth + 1)}`);
-  return `{\n${formatted.join('\n')}\n${indent}}`;
+  const formatted = entries.map(([key, val]) => `${indent}  ${key}: ${formatValue(val, depth + 1)}`);
+  return `{\n${formatted.join('\n')}\n${indent.slice(2)}}`;
 };
 
 const stylish = (diff, depth = 1) => {
@@ -32,5 +36,4 @@ const stylish = (diff, depth = 1) => {
   });
   return result.join('\n');
 };
-
 export default stylish;

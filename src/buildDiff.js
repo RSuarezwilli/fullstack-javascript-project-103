@@ -22,6 +22,16 @@ const buildDiff = (obj1, obj2) => {
       return { key, type: 'nested', children: buildDiff(val1, val2) };
     }
 
+    // Manejar caso cuando un valor cambia de objeto a primitivo o viceversa
+    if (isObject(val1) || isObject(val2)) {
+      return {
+        key,
+        type: 'changed',
+        oldValue: val1,
+        newValue: val2,
+      };
+    }
+
     return {
       key,
       type: 'changed',
@@ -30,5 +40,4 @@ const buildDiff = (obj1, obj2) => {
     };
   });
 };
-
 export default buildDiff;
