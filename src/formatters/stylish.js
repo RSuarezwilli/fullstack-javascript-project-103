@@ -30,7 +30,7 @@ const stylish = (diff, depth = 1) => {
         throw new Error(`Unknown node type: ${node.type}`);
     }
   });
-  // return result.join('\n');
+  return result.join('\n');
 };
 
 export default stylish;
