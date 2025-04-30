@@ -31,4 +31,8 @@ const buildDiff = (obj1, obj2) => {
   });
 };
 
-export default buildDiff;
+export default (data1, data2) => ({
+  type:"root",
+  children: buildDiff(data1, data2),
+});
+
