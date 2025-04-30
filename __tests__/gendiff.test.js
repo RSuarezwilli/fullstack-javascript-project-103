@@ -13,6 +13,6 @@ test('gendiff basic test', () => {
   const filepath1 = getFixturePath('file1.json');
   const filepath2 = getFixturePath('file2.json');
   const expected = readFile('stylish.result.txt');
-console.log('Expected:', expected);
+  console.log('Expected:', expected);
   expect(gendiff(filepath1, filepath2)).toEqual(expected);
 });

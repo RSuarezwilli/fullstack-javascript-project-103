@@ -8,7 +8,7 @@ const formatValue = (data, depth, renderFunctions) => {
   }
 
   const entries = Object.entries(data)
-    .map(([key, value]) => renderFunctions['unchanged']({ key, value }, depth + 1, renderFunctions));
+    .map(([key, value]) => renderFunctions.unchanged({ key, value }, depth + 1, renderFunctions));
 
   return `{\n${entries.join('\n')}\n${getIndentation(depth)}  }`;
 };
@@ -38,21 +38,19 @@ const formatValue = (data, depth, renderFunctions) => {
 // };
 // export default stylish;
 
-
-
 const renderFunctions = {
-  ['root']: ({ children }, depth, iterate) => {
+  root: ({ children }, depth, iterate) => {
     const renderedChildren = children.flatMap((child) => iterate(child, depth + 1));
     return `{\n${renderedChildren.join('\n')}\n}`;
   },
-  ['nested']: ({ key, children }, depth, iterate) => {
+  nested: ({ key, children }, depth, iterate) => {
     const nestedChildren = children.flatMap((child) => iterate(child, depth + 1));
     return `${getIndentation(depth)}  ${key}: {\n${nestedChildren.join('\n')}\n${getIndentation(depth)}  }`;
   },
-  ['added']: (node, depth, iterate) => `${getIndentation(depth)}+ ${node.key}: ${formatValue(node.value, depth, iterate)}`,
-  ['removed']: (node, depth, iterate) => `${getIndentation(depth)}- ${node.key}: ${formatValue(node.value, depth, iterate)}`,
-  ['unchanged']: (node, depth, iterate) => `${getIndentation(depth)}  ${node.key}: ${formatValue(node.value, depth, iterate)}`,
-  ['changed']: (node, depth, iterate) => {
+  added: (node, depth, iterate) => `${getIndentation(depth)}+ ${node.key}: ${formatValue(node.value, depth, iterate)}`,
+  removed: (node, depth, iterate) => `${getIndentation(depth)}- ${node.key}: ${formatValue(node.value, depth, iterate)}`,
+  unchanged: (node, depth, iterate) => `${getIndentation(depth)}  ${node.key}: ${formatValue(node.value, depth, iterate)}`,
+  changed: (node, depth, iterate) => {
     const formattedOld = `${getIndentation(depth)}- ${node.key}: ${formatValue(node.oldValue, depth, iterate)}`;
     const formattedNew = `${getIndentation(depth)}+ ${node.key}: ${formatValue(node.newValue, depth, iterate)}`;
     return [formattedOld, formattedNew].join('\n');

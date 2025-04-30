@@ -32,7 +32,6 @@ const buildDiff = (obj1, obj2) => {
 };
 
 export default (data1, data2) => ({
-  type:"root",
+  type: 'root',
   children: buildDiff(data1, data2),
 });
-
