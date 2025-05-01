@@ -1,23 +1,36 @@
-import { readFileSync } from 'fs';
+import fs from 'fs';
 import path from 'path';
-import buildDiff from './utils/diff.js';
-import stylish from './formatters/stylish.js';
-import parse from './parsers/parsers.js';
+import getDiff from './utils/diff.js';
+import parseFile from './parsers/parsers.js';
+import format from './formatters/index.js';
 
-const getFileContent = (filepath) => {
-  const absolutePath = path.resolve(process.cwd(), filepath);
-  return readFileSync(absolutePath, 'utf-8');
+const getFullPath = (filepath) => path.resolve(process.cwd(), filepath);
+
+export const readFile = (fullFilePath) => {
+  try {
+    const extension = path.extname(fullFilePath).split('.')[1];
+    const data = parseFile(fs.readFileSync(fullFilePath, 'utf-8'), extension);
+    return data;
+  } catch (err) {
+    console.error(`Error reading file "${fullFilePath}":`, err.message);
+    return null;
+  }
 };
 
-const getFileFormat = (filepath) => path.extname(filepath).slice(1);
-const genDiff = (filepath1, filepath2, format = 'stylish') => {
-  const content1 = getFileContent(filepath1);
-  const content2 = getFileContent(filepath2);
-  const obj1 = parse(content1, getFileFormat(filepath1));
-  const obj2 = parse(content2, getFileFormat(filepath2));
+export default function genDiff(path1, path2, formatType = 'stylish') {
+  const firstFilePath = getFullPath(path1);
+  const secondFilePath = getFullPath(path2);
 
-  const diff = buildDiff(obj1, obj2);
-  if (format === 'stylish') return stylish(diff);
-  throw new Error(`Unsupported format: ${format}`);
-};
-export default genDiff;
+  const firstFileData = readFile(firstFilePath);
+  const secondFileData = readFile(secondFilePath);
+
+  if (!firstFileData || !secondFileData) {
+    console.error('Error reading one or both files. Please check the file paths and formats.');
+    return;
+  }
+
+  const diff = getDiff(firstFileData, secondFileData);
+  const formattedDiff = format({ data: diff, formatType });
+  // eslint-disable-next-line consistent-return
+  return formattedDiff;
+}

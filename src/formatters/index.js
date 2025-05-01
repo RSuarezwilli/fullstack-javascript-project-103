@@ -1,16 +1,18 @@
-import formatStylish from './stylish.js';
-import formatPlain from './plain.js';
+import renderStylishTree from './stylish.js';
+import renderToPlainText from './plain.js';
 
 const formatters = {
-  stylish: formatStylish,
-  plain: formatPlain,
   json: JSON.stringify,
+  stylish: renderStylishTree,
+  plain: renderToPlainText,
 };
 
-export default (formatName) => {
-  const formatter = formatters[formatName];
+export default function format({ data, formatType = 'stylish' }) {
+  const formatter = formatters[formatType];
+
   if (!formatter) {
-    throw new Error(`Unknown format: ${formatName}`);
+    throw new Error(`Format type "${formatType}" is not available.`);
   }
-  return formatter;
-};
+
+  return formatter(data);
+}
