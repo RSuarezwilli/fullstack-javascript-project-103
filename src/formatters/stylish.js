@@ -3,7 +3,7 @@ import _ from 'lodash';
 const getIndentation = (depth, spacesCount = 4) => ' '.repeat(depth * spacesCount - 2);
 
 const formatValue = (data, depth, renderFunctions) => {
-  if (data === null) return 'null'; // Agregar caso explícito para null
+  // if (!_.isObject(data)) return String(data);
   if (!_.isPlainObject(data)) return String(data);
 
   const entries = Object.entries(data)
