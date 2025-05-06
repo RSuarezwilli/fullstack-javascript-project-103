@@ -1,7 +1,6 @@
 import renderStylishTree from './stylish.js';
 import renderToPlainText from './plain.js';
 
-
 const formatters = {
   stylish: renderStylishTree,
   plain: renderToPlainText,
