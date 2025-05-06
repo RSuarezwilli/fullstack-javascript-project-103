@@ -1,26 +1,28 @@
-import { fileURLToPath } from 'url';
-import path from 'path';
 import fs from 'fs';
-import gendiff from '../src/index.js'; // <-- Solo UN import
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+import genDiff from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
-const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8').trim();
+const getPath = (filename) => path.join(__dirname, '../', '__fixtures__', filename);
+const readTestsFiles = (filename) => fs.readFileSync(getPath(filename), 'utf-8').trim();
 
-// Función auxiliar para normalizar saltos de línea (opcional)
-const normalize = (str) => str.replace(/\r\n/g, '\n').trim();
+const stylishResult = readTestsFiles('stylish-result.txt');
 
-test('gendiff basic test', () => {
-  const file1 = getFixturePath('file1-y.yaml');
-  const file2 = getFixturePath('file2-y.yaml');
+const jsonResult = readTestsFiles('json-result.json');
+describe('gendiff', () => {
+  test('Format for stylish Result - YAML File', () => {
+    const filepath1 = getPath('file1-y.yaml');
+    const filepath2 = getPath('file2-y.yaml');
+    expect(genDiff(filepath1, filepath2, 'stylish')).toEqual(stylishResult);
+  });
 
-  // Test para formato stylish (por defecto)
-  const expectedStylish = readFile('stylish-result.txt');
-  expect(normalize(gendiff(file1, file2))).toEqual(normalize(expectedStylish));
-
-  // Test para formato JSON
-  const expectedJson = readFile('json-result.json');
-  expect(gendiff(file1, file2, 'json')).toEqual(expectedJson);
+  test('Format for JSON Result - JSON File', () => {
+    const filepath1 = getPath('file1.json');
+    const filepath2 = getPath('file2.json');
+    expect(genDiff(filepath1, filepath2, 'json')).toEqual(jsonResult);
+  });
 });
