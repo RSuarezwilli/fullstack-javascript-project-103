@@ -13,11 +13,11 @@ const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8'
 const normalize = (str) => str.replace(/\r\n/g, '\n').trim();
 
 test('gendiff basic test', () => {
-  const file1 = getFixturePath('file1.json');
-  const file2 = getFixturePath('file2.json');
+  const file1 = getFixturePath('file1-y.yaml');
+  const file2 = getFixturePath('file2-y.yaml');
 
   // Test para formato stylish (por defecto)
-  const expectedStylish = readFile('stylish.result.txt');
+  const expectedStylish = readFile('stylish-result.txt');
   expect(normalize(gendiff(file1, file2))).toEqual(normalize(expectedStylish));
 
   // Test para formato JSON
